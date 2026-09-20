@@ -22,7 +22,8 @@ CREATE TABLE IF NOT EXISTS `job_application_tracker_db`.`users` (
   `name` VARCHAR(45) NOT NULL,
   `email` VARCHAR(100) NOT NULL,
   `password` VARCHAR(255) NOT NULL,
-  PRIMARY KEY (`id`))
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE)
 ENGINE = InnoDB;
 
 
@@ -45,11 +46,13 @@ CREATE TABLE IF NOT EXISTS `job_application_tracker_db`.`applications` (
   `position` VARCHAR(100) NOT NULL,
   `location` VARCHAR(100) NOT NULL,
   `salary` VARCHAR(100) NOT NULL,
-  `date` DATETIME NOT NULL,
+  `applied_at` DATETIME NULL,
   `notes` TEXT NULL,
-  `url` TEXT NOT NULL,
+  `url` TEXT NULL,
   `user_id` INT NOT NULL,
   `status_id` INT NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   INDEX `fk_applications_users_idx` (`user_id` ASC) VISIBLE,
   INDEX `fk_applications_status1_idx` (`status_id` ASC) VISIBLE,
