@@ -28,9 +28,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `job_application_tracker_db`.`status`
+-- Table `job_application_tracker_db`.`statuses`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `job_application_tracker_db`.`status` (
+CREATE TABLE IF NOT EXISTS `job_application_tracker_db`.`statuses` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `status` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`))
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `job_application_tracker_db`.`applications` (
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_applications_status1`
     FOREIGN KEY (`status_id`)
-    REFERENCES `job_application_tracker_db`.`status` (`id`)
+    REFERENCES `job_application_tracker_db`.`statuses` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
