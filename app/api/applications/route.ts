@@ -16,7 +16,7 @@ export async function GET() {
 
     return Response.json(rows);
   } catch (error: any) {
-    Response.json(
+    return Response.json(
       { error: "Failed to load applications: " + error.message },
       { status: 500 },
     );
@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
       { status: 201 },
     );
   } catch (error: any) {
-    Response.json(
+    return Response.json(
       { error: "Failed to create application: " + error.message },
       { status: 500 },
     );
