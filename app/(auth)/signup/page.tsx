@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function SignUp() {
@@ -10,7 +11,37 @@ export default function SignUp() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSignUp = async () => {};
+  const router = useRouter();
+
+  const handleSignUp = async () => {
+    setError("");
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error);
+        return;
+      }
+
+      router.push("/login");
+    } catch (error) {
+      console.error("Failed to create account", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="w-full h-full flex-1 flex items-center justify-center p-7 overflow-y-scroll">

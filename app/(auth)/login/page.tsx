@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function Login() {
@@ -9,7 +10,36 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleLogin = async () => {};
+  const router = useRouter();
+
+  const handleLogin = async () => {
+    setError("");
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error);
+        return;
+      }
+
+      router.push("/dashboard");
+    } catch (error) {
+      console.error("Failed to login", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="w-full h-full flex-1 flex items-center justify-center p-7 overflow-y-scroll">
