@@ -1,6 +1,6 @@
 export type Status = {
   id: number;
-  name: string;
+  status: string;
 };
 
 export type Application = {
