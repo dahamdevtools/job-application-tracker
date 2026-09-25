@@ -23,7 +23,39 @@ export default function AddApplicationModal({ onClose, onSuccess }: Props) {
   const [error, setError] = useState("");
 
   const handleAdd = async () => {
-    onClose();
+    setError("");
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/applications", {
+        method: "POST",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify({
+          company,
+          position,
+          location,
+          salary,
+          applied_at: appliedDate,
+          notes,
+          url,
+          status_id: status,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error);
+        return;
+      }
+
+      onSuccess();
+      onClose();
+    } catch (error) {
+      console.error("Failed to add application", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
