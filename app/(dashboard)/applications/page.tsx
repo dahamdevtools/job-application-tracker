@@ -1,5 +1,6 @@
 "use client";
 
+import AddApplicationModal from "@/components/addApplicationModal";
 import { Status } from "@/types";
 import { useEffect, useState } from "react";
 import { LuPlus } from "react-icons/lu";
@@ -7,6 +8,8 @@ import { LuPlus } from "react-icons/lu";
 export default function Applications() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statuses, setStatuses] = useState<Status[]>([]);
+  const [isAddApplicationModalOpen, setIsAddApplicationModalOpen] =
+    useState(false);
 
   const getStatuses = async () => {
     const res = await fetch("/api/statuses/");
@@ -18,6 +21,8 @@ export default function Applications() {
 
     setStatuses(data);
   };
+
+  const fetchApplications = async () => {};
 
   useEffect(() => {
     getStatuses();
@@ -36,7 +41,10 @@ export default function Applications() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <button className="w-fit h-10 px-3 gap-2 pe-5 flex items-center rounded-xl text-indigo-500 bg-indigo-100">
+          <button
+            onClick={() => setIsAddApplicationModalOpen(true)}
+            className="w-fit h-10 px-3 gap-2 pe-5 flex items-center rounded-xl text-indigo-500 bg-indigo-100"
+          >
             <LuPlus className="text-lg" />
             <span>Add Application</span>
           </button>
@@ -52,6 +60,13 @@ export default function Applications() {
           </button>
         ))}
       </div>
+
+      {isAddApplicationModalOpen && (
+        <AddApplicationModal
+          onClose={() => setIsAddApplicationModalOpen(false)}
+          onSuccess={fetchApplications}
+        />
+      )}
     </div>
   );
 }
