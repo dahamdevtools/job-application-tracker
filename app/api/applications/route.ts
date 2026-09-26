@@ -1,5 +1,6 @@
 import { getCurrentUser } from "@/lib/auth";
 import pool from "@/lib/db";
+import { format } from "date-fns";
 import { NextRequest } from "next/server";
 
 export async function GET() {
@@ -10,7 +11,7 @@ export async function GET() {
     }
 
     const [rows] = await pool.query(
-      "SELECT * FROM applications WHERE user_id = ?",
+      "SELECT applications.*, statuses.status FROM applications INNER JOIN statuses ON applications.status_id = statuses.id WHERE user_id = ?",
       [session.userId],
     );
 
@@ -40,6 +41,8 @@ export async function POST(req: NextRequest) {
       url,
       status_id,
     } = await req.json();
+
+    const formattedDate = format(new Date(applied_at), "yyyy-MM-dd HH:mm:ss");
 
     if (!company || !company.trim()) {
       return Response.json(
@@ -71,7 +74,7 @@ export async function POST(req: NextRequest) {
         position,
         location,
         salary,
-        applied_at,
+        formattedDate,
         notes,
         url,
         session.userId,
