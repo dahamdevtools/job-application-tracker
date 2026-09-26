@@ -2,7 +2,7 @@
 
 import AddApplicationModal from "@/components/addApplicationModal";
 import ApplicationCard from "@/components/applicationCard";
-import { Status } from "@/types";
+import { Application, Status } from "@/types";
 import { useEffect, useState } from "react";
 import { LuPlus } from "react-icons/lu";
 
@@ -11,6 +11,8 @@ export default function Applications() {
   const [statuses, setStatuses] = useState<Status[]>([]);
   const [isAddApplicationModalOpen, setIsAddApplicationModalOpen] =
     useState(false);
+  const [applications, setApplications] = useState<Application[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const getStatuses = async () => {
     const res = await fetch("/api/statuses/");
@@ -23,14 +25,27 @@ export default function Applications() {
     setStatuses(data);
   };
 
-  const fetchApplications = async () => {};
+  const fetchApplications = async () => {
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/applications");
+      const data = await res.json();
+      setApplications(data);
+    } catch (error) {
+      console.error("Failed to fetch applications", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     getStatuses();
+    fetchApplications();
   }, []);
 
   return (
-    <div className="w-full min-h-0 min-w-0 flex flex-col gap-7 p-3.5 pt-7 overflow-y-auto">
+    <div className="w-full min-h-0 h-full min-w-0 flex flex-col gap-7 p-3.5 pt-7 overflow-y-auto">
       <div className="w-full h-fit flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-xl">Applications</h1>
         <div className="w-fit h-fit flex flex-wrap items-center gap-2">
@@ -62,11 +77,21 @@ export default function Applications() {
         ))}
       </div>
 
-      <div className="w-full h-fit grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
-        {Array.from({ length: 10 }).map((card, index) => (
-          <ApplicationCard key={index} />
-        ))}
-      </div>
+      {loading ? (
+        <div className="w-full h-full p-7 text-lg flex items-center justify-center">
+          <p>Loading...</p>
+        </div>
+      ) : applications.length === 0 ? (
+        <div className="w-full h-full p-7 text-lg flex items-center justify-center">
+          <p>No applications yet.</p>
+        </div>
+      ) : (
+        <div className="w-full h-fit grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+          {applications.map((application, index) => (
+            <ApplicationCard key={index} data={application} />
+          ))}
+        </div>
+      )}
 
       {isAddApplicationModalOpen && (
         <AddApplicationModal
