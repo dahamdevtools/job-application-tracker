@@ -13,4 +13,5 @@ export type Application = {
   notes: string;
   url: string;
   status: string;
+  status_id: number;
 };

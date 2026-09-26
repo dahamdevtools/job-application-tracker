@@ -1,5 +1,6 @@
 import { getCurrentUser } from "@/lib/auth";
 import pool from "@/lib/db";
+import { format } from "date-fns";
 import { NextRequest } from "next/server";
 
 export async function PUT(
@@ -24,6 +25,8 @@ export async function PUT(
       url,
       status_id,
     } = await req.json();
+
+    const formattedDate = format(new Date(applied_at), "yyyy-MM-dd HH:mm:ss");
 
     if (!company || !company.trim()) {
       return Response.json(
@@ -55,7 +58,7 @@ export async function PUT(
         position,
         location,
         salary,
-        applied_at,
+        formattedDate,
         notes,
         url,
         status_id,
@@ -83,7 +86,10 @@ export async function PUT(
   }
 }
 
-export async function DELETE({ params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
   try {
     const session = await getCurrentUser();
     if (!session) {
