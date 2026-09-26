@@ -5,7 +5,7 @@ import { LuBanknote, LuCalendar, LuLink, LuMapPin } from "react-icons/lu";
 
 interface Props {
   data: Application;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 const STATUS_STYLE: Record<string, string> = {
