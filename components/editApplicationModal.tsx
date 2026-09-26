@@ -27,7 +27,7 @@ export default function EditApplicationModal({
   const [notes, setNotes] = useState(
     application.notes ? application.notes : "",
   );
-  const [url, setUrl] = useState(application.url);
+  const [url, setUrl] = useState(application.url ? application.url : "");
   const [status, setStatus] = useState<number | null>(application.status_id);
   const [saveError, setSaveError] = useState("");
   const [deleteError, setDeleteError] = useState("");
