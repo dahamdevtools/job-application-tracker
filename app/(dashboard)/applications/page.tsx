@@ -2,6 +2,7 @@
 
 import AddApplicationModal from "@/components/addApplicationModal";
 import ApplicationCard from "@/components/applicationCard";
+import EditApplicationModal from "@/components/editApplicationModal";
 import { Application, Status } from "@/types";
 import { useEffect, useState } from "react";
 import { LuPlus } from "react-icons/lu";
@@ -9,10 +10,13 @@ import { LuPlus } from "react-icons/lu";
 export default function Applications() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statuses, setStatuses] = useState<Status[]>([]);
+  const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
   const [isAddApplicationModalOpen, setIsAddApplicationModalOpen] =
     useState(false);
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(false);
+  const [selectedApplication, setSelectedApplication] =
+    useState<Application | null>(null);
 
   const getStatuses = async () => {
     const res = await fetch("/api/statuses/");
@@ -38,6 +42,20 @@ export default function Applications() {
       setLoading(false);
     }
   };
+
+  const filteredApplications = applications.filter((application) => {
+    const term = searchTerm.toLowerCase();
+
+    const matchesSearch =
+      application.company.toLowerCase().includes(term) ||
+      application.position.toLowerCase().includes(term) ||
+      application.location.toLowerCase().includes(term);
+
+    const matchesStatus =
+      selectedStatus === null || application.status === selectedStatus;
+
+    return matchesSearch && matchesStatus;
+  });
 
   useEffect(() => {
     getStatuses();
@@ -67,9 +85,16 @@ export default function Applications() {
         </div>
       </div>
       <div className="w-full h-fit flex flex-wrap gap-2">
+        <button
+          onClick={() => setSelectedStatus(null)}
+          className={`w-fit h-10 px-4 rounded-xl ${selectedStatus === null ? "bg-neutral-50" : "bg-neutral-200"}`}
+        >
+          All
+        </button>
         {statuses.map((status) => (
           <button
-            className="w-fit h-10 px-4 rounded-xl bg-neutral-200"
+            onClick={() => setSelectedStatus(status.status)}
+            className={`w-fit h-10 px-4 rounded-xl ${selectedStatus === status.status ? "bg-neutral-50" : "bg-neutral-200"}`}
             key={status.id}
           >
             {status.status}
@@ -85,10 +110,18 @@ export default function Applications() {
         <div className="w-full h-full p-7 text-lg flex items-center justify-center">
           <p>No applications yet.</p>
         </div>
+      ) : filteredApplications.length === 0 ? (
+        <div className="w-full h-full p-7 text-lg flex items-center justify-center">
+          <p>No application found.</p>
+        </div>
       ) : (
         <div className="w-full h-fit grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
-          {applications.map((application, index) => (
-            <ApplicationCard key={index} data={application} />
+          {filteredApplications.map((application, index) => (
+            <ApplicationCard
+              key={index}
+              data={application}
+              onClick={() => setSelectedApplication(application)}
+            />
           ))}
         </div>
       )}
@@ -96,6 +129,14 @@ export default function Applications() {
       {isAddApplicationModalOpen && (
         <AddApplicationModal
           onClose={() => setIsAddApplicationModalOpen(false)}
+          onSuccess={fetchApplications}
+        />
+      )}
+
+      {selectedApplication !== null && (
+        <EditApplicationModal
+          application={selectedApplication}
+          onClose={() => setSelectedApplication(null)}
           onSuccess={fetchApplications}
         />
       )}
