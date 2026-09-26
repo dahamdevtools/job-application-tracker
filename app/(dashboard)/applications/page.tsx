@@ -118,7 +118,7 @@ export default function Applications() {
         <div className="w-full h-fit grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
           {filteredApplications.map((application, index) => (
             <ApplicationCard
-              key={index}
+              key={application.id}
               data={application}
               onClick={() => setSelectedApplication(application)}
             />
