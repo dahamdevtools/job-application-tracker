@@ -1,6 +1,7 @@
 "use client";
 
 import AddApplicationModal from "@/components/addApplicationModal";
+import ApplicationCard from "@/components/applicationCard";
 import { Status } from "@/types";
 import { useEffect, useState } from "react";
 import { LuPlus } from "react-icons/lu";
@@ -58,6 +59,12 @@ export default function Applications() {
           >
             {status.status}
           </button>
+        ))}
+      </div>
+
+      <div className="w-full h-fit grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+        {Array.from({ length: 10 }).map((card, index) => (
+          <ApplicationCard key={index} />
         ))}
       </div>
 
