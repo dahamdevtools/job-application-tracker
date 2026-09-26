@@ -11,7 +11,7 @@ export async function GET() {
     }
 
     const [rows] = await pool.query(
-      "SELECT applications.*, statuses.status FROM applications INNER JOIN statuses ON applications.status_id = statuses.id WHERE user_id = ?",
+      "SELECT applications.*, statuses.status FROM applications INNER JOIN statuses ON applications.status_id = statuses.id WHERE user_id = ? ORDER BY applications.updated_at DESC",
       [session.userId],
     );
 
